@@ -12,14 +12,14 @@ from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import KFold
 from sklearn.model_selection import StratifiedKFold
 #%%
-df_jan_2015_demand=pd.read_pickle("df_jan_2015_demand.pkl")
-df_feb_2015_demand=pd.read_pickle("df_feb_2015_demand.pkl")
-df_mar_2015_demand=pd.read_pickle("df_mar_2015_demand.pkl")
+df_jan_2015_demand=pd.read_pickle("pickle/df_jan_2015_demand.pkl")
+df_feb_2015_demand=pd.read_pickle("pickle/df_feb_2015_demand.pkl")
+df_mar_2015_demand=pd.read_pickle("pickle/df_mar_2015_demand.pkl")
 #%%
 
-df_jan_2016_demand=pd.read_pickle("df_jan_2016_demand.pkl")
-df_feb_2016_demand=pd.read_pickle("df_feb_2016_demand.pkl")
-df_mar_2016_demand=pd.read_pickle("df_mar_2016_demand.pkl")
+df_jan_2016_demand=pd.read_pickle("pickle/df_jan_2016_demand.pkl")
+df_feb_2016_demand=pd.read_pickle("pickle/df_feb_2016_demand.pkl")
+df_mar_2016_demand=pd.read_pickle("pickle/df_mar_2016_demand.pkl")
 
 #%%
 regions=list(df_jan_2015_demand["regions"].unique())
