@@ -11,6 +11,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import KFold
 from sklearn.model_selection import StratifiedKFold
+
 #%%
 df_jan_2015_demand=pd.read_pickle("pickle/df_jan_2015_demand.pkl")
 df_feb_2015_demand=pd.read_pickle("pickle/df_feb_2015_demand.pkl")
@@ -375,7 +376,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 #%%
 xg_reg = xgb.XGBRegressor(objective ='reg:linear', colsample_bytree = 0.3, learning_rate = 0.05,
-                max_depth = 5, alpha = 10, n_estimators = 1000 , eval= 'mae')
+                max_depth = 4, alpha = 10, n_estimators = 1000 , eval= 'mae')
 
 #%%
 xg_reg.fit(X_train,y_train)
@@ -439,6 +440,41 @@ def smothing_zeros(df_new):
 
 
 #%%
-X=df.drop(columns=['target'])
-y=df['target']
+X=df.drop(columns=['target']).values
+y=df['target'].values
 
+
+#%%
+pred=np.zeros(len(y),dtype=float)
+test=np.zeros(len(y))
+cv = KFold(n_splits=10, random_state=42, shuffle=True)
+for train_index, test_index in cv.split(X):
+     X_train, X_test, y_train, y_test = X[train_index], X[test_index], y[train_index], y[test_index]
+     xg_reg.fit(X_train,y_train)
+     p=xg_reg.predict(X_test)
+     pred[test_index] = p 
+     test [test_index] = y_test 
+
+
+
+
+
+
+
+
+#%%
+pred
+
+#%%
+test
+
+#%%
+mean_squared_error(test,pred)
+
+#%%
+xg_reg.fit(X,y)
+predi=xg_reg.predict(X)
+mean_squared_error(y,predi)
+
+
+#%%
