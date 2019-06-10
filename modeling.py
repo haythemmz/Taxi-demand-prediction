@@ -437,6 +437,42 @@ def smothing_zeros(df_new):
     l=[]
     for j in  regions : 
         gr_j=gr.get_group(j)
+        true_values=list(gr_j["taxi_demand"])
+        diff=[]
+        for k in range(len(true_values)):
+            if true_values[k]==0: 
+                if  k==0 :
+                    for j in range(k,len(true_values)):
+                        if true_values[j] != 0 :
+                            diff.append(true_values[j]/2)
+                            break
+                if k!=0 & k != len(true_values)-1:
+                    a=0
+                    b=0
+                    for j in range(k,len(true_values)):
+                        if true_values[j] != 0 :
+                            a=true_values[j]
+                            break
+                    for j in range(k,0,-1):
+                        if true_values[j] != 0 :
+                            b=true_values[j]
+                            break
+                    diff.append((a+b)/2)
+
+                if k == len(true_values)-1:
+                    for j in range(k,0,-1):
+                        if true_values[j] != 0 :
+                            diff.append(true_values[j]/2)
+                            break
+            else:
+                diff.append(true_values[k])
+        l=l+diff
+
+    return l 
+
+
+                
+
 
 
 #%%
@@ -476,5 +512,68 @@ xg_reg.fit(X,y)
 predi=xg_reg.predict(X)
 mean_squared_error(y,predi)
 
+
+#%%
+plt.matshow(df.corr())
+
+
+#%%
+a=expo_frame(df_new=df_jan_2016_demand,alpha=0.6)
+
+#%%
+a[:5]
+
+#%%
+mean_squared_error(y,a)
+
+#%%
+
+l=smothing_zeros(df_jan_2016_demand)
+
+#%%
+df['smoothed_target']=smothing_zeros(df_jan_2016_demand)
+
+#%%
+print(len(l))
+
+#%%
+df.shape
+
+#%%
+
+
+
+#%%
+plt.figure(figsize = (8, 6))
+plt.plot(df['smoothed_target'])
+
+#%%
+plt.figure(figsize = (8, 6))
+plt.plot(df['target'])
+
+
+#%%
+df.head(n=20)
+
+#%%
+df[df['target']==0][['target','smoothed_target']].head(n=50)
+
+#%%
+def MAPE(real,prediction):
+    o= abs(np.subtract(real,prediction))/real
+    return (100*sum(o))/len(o)
+
+#%%
+MAPE(list(df['smoothed_target']),a)
+
+
+#%%
+[1,23]-[1,2]
+
+#%%
+list(set([1,23]) - set([1,2]))
+
+#%%
+len(np.subtract([1,23], [1,30]))
 
 #%%
