@@ -503,6 +503,8 @@ pred
 
 #%%
 test
+#%%
+MAPE(test,pred)
 
 #%%
 mean_squared_error(test,pred)
