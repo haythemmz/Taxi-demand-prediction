@@ -579,3 +579,74 @@ list(set([1,23]) - set([1,2]))
 len(np.subtract([1,23], [1,30]))
 
 #%%
+df.head(n=10)
+
+#%%
+X=df.drop(columns=['target','smoothed_target']).values
+y=df['smoothed_target'].values
+xg_reg.fit(X,y)
+predi=xg_reg.predict(X)
+mean_squared_error(y,predi)
+
+
+#%%
+MAPE(y,predi)
+
+#%%
+def lag(df,degree): 
+    regions=list(df["regions"].unique())
+    gr=df.groupby("regions")
+    
+    l=[]
+    for j in  regions : 
+        gr_j=gr.get_group(j)
+        diff=[np.mean(list(gr_j["taxi_demand"]))]*degree
+        
+
+        for i in range(degree, len(gr_j)):
+		        value = list(gr_j["taxi_demand"])[i-degree]
+		        diff.append(value)
+        l=l+diff
+    
+    return l
+
+#%%
+df_jan_2015_demand.shape
+
+#%%
+df_jan_2016_demand.shape
+
+#%%
+df_lag=pd.DataFrame()
+df_lag['jan_2016_lag=0']=df_jan_2016_demand["taxi_demand"]
+df_lag['jan_2016_lag=1']=lag(df_jan_2016_demand,1)
+df_lag['jan_2016_lag=2']=lag(df_jan_2016_demand,2)
+df_lag['jan_2016_lag=3']=lag(df_jan_2016_demand,3)
+df_lag['jan_2015_lag=0']=df_jan_2015_demand["taxi_demand"]
+df_lag['jan_2015_lag=1']=lag(df_jan_2015_demand,1)
+df_lag['jan_2015_lag=2']=lag(df_jan_2015_demand,2)
+df_lag['jan_2015_lag=3']=lag(df_jan_2015_demand,3)
+
+
+#%%
+df_lag.head(n=20)
+
+
+#%%
+df_lag.corr()
+
+#%%
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
+colormap = plt.cm.RdBu
+plt.figure(figsize=(15,10))
+plt.title(u'6 hours', y=1.05, size=16)
+
+mask = np.zeros_like(df_lag.corr())
+mask[np.triu_indices_from(mask)] = True
+
+svm = sns.heatmap(df_lag.corr(), mask=mask, linewidths=0.1,vmax=1.0, 
+            square=True, cmap=colormap, linecolor='white', annot=True)
+
+#%%
